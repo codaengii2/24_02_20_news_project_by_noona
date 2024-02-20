@@ -21,6 +21,8 @@
 // };
 
 // getLatestNews();
+let articles = document.getElementById("article");
+let news = [];
 
 const getNews = async () => {
   // const url = new URL(
@@ -29,7 +31,12 @@ const getNews = async () => {
   const url = new URL(`https://noona-news.netlify.app/top-headlines`);
   const response = await fetch(url);
   const data = await response.json();
-  console.log(data);
+  news = data.articles;
+  console.log(news);
+  const dataNews = news.map((item) => {
+    return item.title + "<br/>";
+  });
+  articles.innerHTML = dataNews;
 };
 
 getNews();
