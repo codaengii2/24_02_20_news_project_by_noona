@@ -33,8 +33,8 @@ const getNews = async () => {
   const data = await response.json();
   news = data.articles;
   console.log(news);
-  const dataNews = news.map((item) => {
-    return item.title + "<br/>";
+  const dataNews = news.map((item, index) => {
+    return `기사 ${index + 1} : ${item.title} <br/>`;
   });
   articles.innerHTML = dataNews;
 };
