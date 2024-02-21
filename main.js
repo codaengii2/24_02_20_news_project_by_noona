@@ -21,7 +21,10 @@
 // };
 
 // getLatestNews();
-let articles = document.getElementById("article");
+// let articles = document.getElementById("article");
+let hamBtn = document.querySelector(".menu-bars");
+let moMenuWrap = document.querySelector(".mo-menu-wrap");
+let moCloseBtn = document.querySelector(".close-btn");
 let news = [];
 
 const getNews = async () => {
@@ -33,10 +36,18 @@ const getNews = async () => {
   const data = await response.json();
   news = data.articles;
   console.log(news);
-  const dataNews = news.map((item, index) => {
-    return `기사 ${index + 1} : ${item.title} <br/>`;
-  });
-  articles.innerHTML = dataNews;
+  // const dataNews = news.map((item, index) => {
+  //   return `기사 ${index + 1} : ${item.title} <br/>`;
+  // });
+  // articles.innerHTML = dataNews;
 };
 
 getNews();
+
+hamBtn.addEventListener("click", () => {
+  moMenuWrap.style.left = 0;
+});
+
+moCloseBtn.addEventListener("click", () => {
+  moMenuWrap.style.left = "-70%";
+});
