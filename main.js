@@ -1,4 +1,4 @@
-// const API_KEY = `710eb34de175489fa946051b323754b8`;
+const API_KEY = `710eb34de175489fa946051b323754b8`;
 // let news = [];
 
 // const getLatestNews = async () => {
@@ -25,21 +25,86 @@
 let hamBtn = document.querySelector(".menu-bars");
 let moMenuWrap = document.querySelector(".mo-menu-wrap");
 let moCloseBtn = document.querySelector(".close-btn");
-let news = [];
+let searchBtn = document.querySelector(".search-btn");
+let searchModal = document.querySelector(".search-modal");
+// let newsWrap = document.getElementById("news-wrap");
+let newsList = [];
 
 const getNews = async () => {
   // const url = new URL(
   //   `http://times-node-env.eba-appvq3ef.ap-northeast-2.elasticbeanstalk.com/top-headlines`
   // );
   const url = new URL(`https://noona-news.netlify.app/top-headlines`);
+
   const response = await fetch(url);
   const data = await response.json();
-  news = data.articles;
-  console.log(news);
+  newsList = data.articles;
+  render();
+  console.log(newsList);
+};
+
+const render = () => {
   // const dataNews = news.map((item, index) => {
   //   return `기사 ${index + 1} : ${item.title} <br/>`;
   // });
-  // articles.innerHTML = dataNews;
+  // newsWrap.innerHTML = dataNews;
+
+  // const dataNewsTitle = news.map((item) => {
+  //   return item.description;
+  // });
+  // const dataNewsAuthor = news.map((item) => {
+  //   return item.author;
+  // });
+
+  const newsHTML = newsList
+    .map(
+      (news) => `
+  <div class="row news"><div class="col-lg-4">
+      <img
+        class="news-img-size mb-2"
+        src="${
+          news.urlToImage ||
+          "https://i.pinimg.com/564x/19/ce/9a/19ce9a815a49e5fdd1b02d578bcb3e07.jpg"
+        }"
+        alt=""
+      />
+    </div>
+    <div class="col-lg-8">
+      <h2>${news.title}</h2>
+      <p>${
+        news.description == null || news.description == ""
+          ? "내용없음"
+          : news.description.length > 200
+          ? news.description.slice(0, 200) + "..."
+          : news.description
+      }</p>
+      <div>${news.source.name || "no source"} * ${moment(
+        news.publishedAt
+      ).fromNow()}</div>
+    </div></div>
+  `
+    )
+    .join("");
+  document.getElementById("news-wrap").innerHTML = newsHTML;
+
+  // for (let i = 0; i < news.length; i++) {
+  //   newsWrap += `<div class="row news"><div class="col-lg-4">
+  //     <img
+  //       class="news-img-size"
+  //       src="${
+  //         news[i].urlToImage
+  //           ? news[i].urlToImage
+  //           : "https://i.pinimg.com/564x/19/ce/9a/19ce9a815a49e5fdd1b02d578bcb3e07.jpg"
+  //       }"
+  //       alt=""
+  //     />
+  //   </div>
+  //   <div class="col-lg-8">
+  //     <h2>${news[i].title}</h2>
+  //     <p>${news[i].description + "..."}</p>
+  //     <div>${news[i].author} * ${news[i].publishedAt.slice(0, 10)}</div>
+  //   </div></div>`;
+  // }
 };
 
 getNews();
@@ -51,3 +116,7 @@ hamBtn.addEventListener("click", () => {
 moCloseBtn.addEventListener("click", () => {
   moMenuWrap.style.left = "-70%";
 });
+
+searchBtn.addEventListener("click", () =>
+  searchModal.classList.toggle("active")
+);
