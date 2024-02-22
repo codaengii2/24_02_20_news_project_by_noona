@@ -21,12 +21,11 @@ header div {
   font-size: 24px;
 }
 .search-modal {
-  opacity: 0;
+  display: none;
 }
 
 .active {
-  opacity: 100;
-  transition: 0.5s;
+  display: block;
 }
 
 .head-line {
@@ -92,6 +91,7 @@ header div {
     position: absolute;
     top: 0;
     left: -70%;
+    z-index: 1;
     width: 70%;
     height: 100%;
     /* background-color: #fff0f0; */

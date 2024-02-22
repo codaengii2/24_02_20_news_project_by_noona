@@ -28,7 +28,22 @@ let moCloseBtn = document.querySelector(".close-btn");
 let searchBtn = document.querySelector(".search-btn");
 let searchModal = document.querySelector(".search-modal");
 // let newsWrap = document.getElementById("news-wrap");
+const menus = document.querySelectorAll(".menus button");
+const searchInput = document.getElementById("searchInput");
+const searchGo = document.getElementById("searchGo");
 let newsList = [];
+
+menus.forEach((menu) =>
+  menu.addEventListener("click", (event) => getNewsByCategory(event))
+);
+
+searchGo.addEventListener("click", (event) => getNewsBySearch(event));
+searchInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    getNewsBySearch();
+  }
+});
 
 const getNews = async () => {
   // const url = new URL(
@@ -41,6 +56,39 @@ const getNews = async () => {
   newsList = data.articles;
   render();
   console.log(newsList);
+};
+
+const getNewsByCategory = async (event) => {
+  const category = event.target.textContent.toLowerCase();
+  //텍스트 컨텐츠를 읽어주세요
+  console.log(category);
+  const url = new URL(
+    `https://noona-news.netlify.app/top-headlines?category=${category}`
+  );
+  const response = await fetch(url);
+  const data = await response.json();
+  console.log(data);
+  newsList = data.articles;
+  render();
+};
+
+const getNewsBySearch = async (event) => {
+  const searchContent = searchInput.value;
+  // console.log(searchContent);
+  const url = new URL(
+    `https://noona-news.netlify.app/top-headlines?q=${searchContent}`
+  );
+  const response = await fetch(url);
+  const data = await response.json();
+  console.log(data);
+  newsList = data.articles;
+  render();
+};
+
+const imgError = (image) => {
+  image.onerror = null;
+  image.src =
+    "https://i.pinimg.com/564x/19/ce/9a/19ce9a815a49e5fdd1b02d578bcb3e07.jpg";
 };
 
 const render = () => {
@@ -58,15 +106,13 @@ const render = () => {
 
   const newsHTML = newsList
     .map(
-      (news) => `
+      (news) =>
+        `
   <div class="row news"><div class="col-lg-4">
       <img
         class="news-img-size mb-2"
-        src="${
-          news.urlToImage ||
-          "https://i.pinimg.com/564x/19/ce/9a/19ce9a815a49e5fdd1b02d578bcb3e07.jpg"
-        }"
-        alt=""
+        src="${news.urlToImage}"
+        alt="뉴스이미지" onerror = "imgError(this)"
       />
     </div>
     <div class="col-lg-8">
@@ -79,8 +125,8 @@ const render = () => {
           : news.description
       }</p>
       <div>${news.source.name || "no source"} * ${moment(
-        news.publishedAt
-      ).fromNow()}</div>
+          news.publishedAt
+        ).fromNow()}</div>
     </div></div>
   `
     )
@@ -109,11 +155,16 @@ const render = () => {
 
 getNews();
 
+//1. 버튼들 클릭이벤트
+//2. 카테고리별 뉴스 가져오기
+//3. 뉴스 보여주기
+
 hamBtn.addEventListener("click", () => {
   moMenuWrap.style.left = 0;
 });
 
 moCloseBtn.addEventListener("click", () => {
+  console.log(moCloseBtn);
   moMenuWrap.style.left = "-70%";
 });
 
