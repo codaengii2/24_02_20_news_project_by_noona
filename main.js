@@ -27,13 +27,32 @@ let moCloseBtn = document.querySelector(".close-btn");
 let searchBtn = document.querySelector(".search-btn");
 let searchModal = document.querySelector(".search-modal");
 const menus = document.querySelectorAll(".menus button");
+const moMenu = document.querySelectorAll(".mo-menu button");
 const searchInput = document.getElementById("searchInput");
 const searchGo = document.getElementById("searchGo");
 let newsList = [];
 let url = new URL(`https://noona-news.netlify.app/top-headlines`);
 
+hamBtn.addEventListener("click", () => {
+  moMenuWrap.style.left = 0;
+});
+
+const closeHandler = () => {
+  moMenuWrap.style.left = "-70%";
+};
+
+searchBtn.addEventListener("click", () =>
+  searchModal.classList.toggle("active")
+);
+
 menus.forEach((menu) =>
   menu.addEventListener("click", (event) => getNewsByCategory(event))
+);
+moMenu.forEach((menu) =>
+  menu.addEventListener("click", (event) => {
+    getNewsByCategory(event);
+    closeHandler();
+  })
 );
 
 searchGo.addEventListener("click", (event) => getNewsBySearch(event));
@@ -138,16 +157,4 @@ getNews();
 //1. 버튼들 클릭이벤트
 //2. 카테고리별 뉴스 가져오기
 //3. 뉴스 보여주기
-
-hamBtn.addEventListener("click", () => {
-  moMenuWrap.style.left = 0;
-});
-
-moCloseBtn.addEventListener("click", () => {
-  console.log(moCloseBtn);
-  moMenuWrap.style.left = "-70%";
-});
-
-searchBtn.addEventListener("click", () =>
-  searchModal.classList.toggle("active")
-);
+moCloseBtn.addEventListener("click", closeHandler);
