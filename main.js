@@ -21,17 +21,16 @@ const API_KEY = `710eb34de175489fa946051b323754b8`;
 // };
 
 // getLatestNews();
-// let articles = document.getElementById("article");
 let hamBtn = document.querySelector(".menu-bars");
 let moMenuWrap = document.querySelector(".mo-menu-wrap");
 let moCloseBtn = document.querySelector(".close-btn");
 let searchBtn = document.querySelector(".search-btn");
 let searchModal = document.querySelector(".search-modal");
-// let newsWrap = document.getElementById("news-wrap");
 const menus = document.querySelectorAll(".menus button");
 const searchInput = document.getElementById("searchInput");
 const searchGo = document.getElementById("searchGo");
 let newsList = [];
+let url = new URL(`https://noona-news.netlify.app/top-headlines`);
 
 menus.forEach((menu) =>
   menu.addEventListener("click", (event) => getNewsByCategory(event))
@@ -45,44 +44,36 @@ searchInput.addEventListener("keydown", (event) => {
   }
 });
 
-const getNews = async () => {
-  // const url = new URL(
-  //   `http://times-node-env.eba-appvq3ef.ap-northeast-2.elasticbeanstalk.com/top-headlines`
-  // );
-  const url = new URL(`https://noona-news.netlify.app/top-headlines`);
-
+const addNewsRender = async () => {
   const response = await fetch(url);
   const data = await response.json();
   newsList = data.articles;
   render();
-  console.log(newsList);
+};
+
+const getNews = () => {
+  // const url = new URL(
+  //   `http://times-node-env.eba-appvq3ef.ap-northeast-2.elasticbeanstalk.com/top-headlines`
+  // );
+  url = new URL(`https://noona-news.netlify.app/top-headlines`);
+  addNewsRender();
 };
 
 const getNewsByCategory = async (event) => {
   const category = event.target.textContent.toLowerCase();
   //텍스트 컨텐츠를 읽어주세요
-  console.log(category);
-  const url = new URL(
+  url = new URL(
     `https://noona-news.netlify.app/top-headlines?category=${category}`
   );
-  const response = await fetch(url);
-  const data = await response.json();
-  console.log(data);
-  newsList = data.articles;
-  render();
+  addNewsRender();
 };
 
 const getNewsBySearch = async (event) => {
   const searchContent = searchInput.value;
-  // console.log(searchContent);
-  const url = new URL(
+  url = new URL(
     `https://noona-news.netlify.app/top-headlines?q=${searchContent}`
   );
-  const response = await fetch(url);
-  const data = await response.json();
-  console.log(data);
-  newsList = data.articles;
-  render();
+  addNewsRender();
 };
 
 const imgError = (image) => {
@@ -92,18 +83,6 @@ const imgError = (image) => {
 };
 
 const render = () => {
-  // const dataNews = news.map((item, index) => {
-  //   return `기사 ${index + 1} : ${item.title} <br/>`;
-  // });
-  // newsWrap.innerHTML = dataNews;
-
-  // const dataNewsTitle = news.map((item) => {
-  //   return item.description;
-  // });
-  // const dataNewsAuthor = news.map((item) => {
-  //   return item.author;
-  // });
-
   const newsHTML = newsList
     .map(
       (news) =>
@@ -132,25 +111,6 @@ const render = () => {
     )
     .join("");
   document.getElementById("news-wrap").innerHTML = newsHTML;
-
-  // for (let i = 0; i < news.length; i++) {
-  //   newsWrap += `<div class="row news"><div class="col-lg-4">
-  //     <img
-  //       class="news-img-size"
-  //       src="${
-  //         news[i].urlToImage
-  //           ? news[i].urlToImage
-  //           : "https://i.pinimg.com/564x/19/ce/9a/19ce9a815a49e5fdd1b02d578bcb3e07.jpg"
-  //       }"
-  //       alt=""
-  //     />
-  //   </div>
-  //   <div class="col-lg-8">
-  //     <h2>${news[i].title}</h2>
-  //     <p>${news[i].description + "..."}</p>
-  //     <div>${news[i].author} * ${news[i].publishedAt.slice(0, 10)}</div>
-  //   </div></div>`;
-  // }
 };
 
 getNews();
