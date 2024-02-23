@@ -32,6 +32,10 @@ const searchInput = document.getElementById("searchInput");
 const searchGo = document.getElementById("searchGo");
 let newsList = [];
 let url = new URL(`https://noona-news.netlify.app/top-headlines`);
+let totalResults = 0;
+let page = 1;
+const pageSize = 10;
+const groupSize = 5;
 
 hamBtn.addEventListener("click", () => {
   moMenuWrap.style.left = 0;
@@ -70,11 +74,13 @@ const addNewsRender = async () => {
     const data = await response.json();
     console.log(data);
     if (response.status === 200) {
-      newsList = data.articles;
       if (data.articles.length === 0) {
         throw new Error(`${searchInput.value}의 검색결과가 없습니다.`);
       }
+      newsList = data.articles;
+      totalResults = data.totalResults;
       render();
+      paginationRender();
     } else {
       throw new Error(data.message);
     }
@@ -152,6 +158,29 @@ const errorRender = (errorMessage) => {
   document.getElementById("news-wrap").innerHTML = errorHTML;
 };
 
+const paginationRender = () => {
+  //totalResult
+  //page
+  //pageSize
+  //groupSize
+
+  //pageGroup
+  const pageGroup = Math.ceil(page / groupSize);
+
+  //lastPage
+  const lastPage = pageGroup * groupSize;
+
+  //firstPage
+  const firstPage = lastPage - (groupSize - 1);
+
+  let paginationHTML = ``;
+
+  for (let i = firstPage; i <= lastPage; i++) {
+    paginationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`;
+  }
+
+  document.querySelector(".pagination").innerHTML = paginationHTML;
+};
 getNews();
 
 //1. 버튼들 클릭이벤트
