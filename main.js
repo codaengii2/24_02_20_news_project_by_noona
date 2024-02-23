@@ -45,10 +45,23 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 const addNewsRender = async () => {
-  const response = await fetch(url);
-  const data = await response.json();
-  newsList = data.articles;
-  render();
+  try {
+    const response = await fetch(url);
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    if (response.status === 200) {
+      newsList = data.articles;
+      if (data.articles.length === 0) {
+        throw new Error(`${searchInput.value}의 검색결과가 없습니다.`);
+      }
+      render();
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    errorRender(error.message);
+  }
 };
 
 const getNews = () => {
@@ -68,7 +81,7 @@ const getNewsByCategory = async (event) => {
   addNewsRender();
 };
 
-const getNewsBySearch = async (event) => {
+const getNewsBySearch = async () => {
   const searchContent = searchInput.value;
   url = new URL(
     `https://noona-news.netlify.app/top-headlines?q=${searchContent}`
@@ -111,6 +124,13 @@ const render = () => {
     )
     .join("");
   document.getElementById("news-wrap").innerHTML = newsHTML;
+};
+
+const errorRender = (errorMessage) => {
+  const errorHTML = `<div class="alert alert-danger" role="alert">
+  ${errorMessage}
+</div>`;
+  document.getElementById("news-wrap").innerHTML = errorHTML;
 };
 
 getNews();
