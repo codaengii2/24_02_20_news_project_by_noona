@@ -3,6 +3,11 @@
   padding: 0;
 }
 
+a {
+  display: block;
+  color: #000;
+}
+
 header {
   display: flex;
   align-items: center;
@@ -71,7 +76,10 @@ header div {
   display: none;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 576px) {
+  .head-line svg {
+    width: 100%;
+  }
   .search-btn {
     font-size: 18px;
   }
