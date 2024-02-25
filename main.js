@@ -1,4 +1,4 @@
-const API_KEY = `710eb34de175489fa946051b323754b8`;
+// const API_KEY = `710eb34de175489fa946051b323754b8`;
 // let news = [];
 
 // const getLatestNews = async () => {
@@ -21,11 +21,12 @@ const API_KEY = `710eb34de175489fa946051b323754b8`;
 // };
 
 // getLatestNews();
-let hamBtn = document.querySelector(".menu-bars");
-let moMenuWrap = document.querySelector(".mo-menu-wrap");
-let moCloseBtn = document.querySelector(".close-btn");
-let searchBtn = document.querySelector(".search-btn");
-let searchModal = document.querySelector(".search-modal");
+const hamBtn = document.querySelector(".menu-bars");
+const moMenuWrap = document.querySelector(".mo-menu-wrap");
+const moCloseBtn = document.querySelector(".close-btn");
+const searchBtn = document.querySelector(".search-btn");
+const searchModal = document.querySelector(".search-modal");
+const topBtn = document.querySelector(".top_btn");
 const menus = document.querySelectorAll(".menus button");
 const moMenu = document.querySelectorAll(".mo-menu button");
 const searchInput = document.getElementById("searchInput");
@@ -34,8 +35,8 @@ let newsList = [];
 let url = new URL(`https://noona-news.netlify.app/top-headlines`);
 let totalResults = 0;
 let page = 1;
-const pageSize = 10;
-const groupSize = 5;
+let pageSize = 10;
+let groupSize = 5;
 
 hamBtn.addEventListener("click", () => {
   moMenuWrap.style.left = 0;
@@ -48,6 +49,10 @@ const closeHandler = () => {
 searchBtn.addEventListener("click", () =>
   searchModal.classList.toggle("active")
 );
+
+topBtn.addEventListener("click", () => {
+  window.scrollTo(0, 0);
+});
 
 menus.forEach((menu) =>
   menu.addEventListener("click", (event) => getNewsByCategory(event))
@@ -78,7 +83,7 @@ const addNewsRender = async () => {
     console.log(data);
     if (response.status === 200) {
       if (data.articles.length === 0) {
-        throw new Error(`${searchInput.value}의 검색결과가 없습니다.`);
+        throw new Error(`${searchInput.value} 결과가 없습니다.`);
       }
       newsList = data.articles;
       totalResults = data.totalResults;
@@ -93,7 +98,7 @@ const addNewsRender = async () => {
 };
 
 const getNews = () => {
-  // const url = new URL(
+  // let url = new URL(
   //   `http://times-node-env.eba-appvq3ef.ap-northeast-2.elasticbeanstalk.com/top-headlines`
   // );
   url = new URL(`https://noona-news.netlify.app/top-headlines`);
@@ -102,6 +107,7 @@ const getNews = () => {
 
 const getNewsByCategory = async (event) => {
   const category = event.target.textContent.toLowerCase();
+  console.log(category);
   //텍스트 컨텐츠를 읽어주세요
   url = new URL(
     `https://noona-news.netlify.app/top-headlines?category=${category}`
@@ -167,29 +173,59 @@ const paginationRender = () => {
   //pageSize
   //groupSize
   //totalGroup
-  const totalPages = Math.ceil(totalResults / pageSize);
+  let totalPages = Math.ceil(totalResults / pageSize);
 
   //pageGroup
-  const pageGroup = Math.ceil(page / groupSize);
+  let pageGroup = Math.ceil(page / groupSize);
 
   //lastPage
-  const lastPage = pageGroup * groupSize;
+  let lastPage = pageGroup * groupSize;
   //마지막 페이지그룹이 그룹사이즈보다 작을경우 lastPage = tatalPage
   if (lastPage > totalPages) {
     lastPage = totalPages;
   }
 
   //firstPage
-  const firstPage =
+  let firstPage =
     lastPage - (groupSize - 1) <= 0 ? 1 : lastPage - (groupSize - 1);
 
   let paginationHTML = ``;
 
+  if (firstPage >= 6) {
+    paginationHTML = ` <li class="page-item" onClick="moveToPage(1)">
+    <a class="page-link" href="#" aria-label="Previous">
+      <span aria-hidden="true">&laquo;</span>
+    </a>
+  </li>
+    <li class="page-item" onClick="moveToPage(${page - 1})">
+    <a class="page-link" href="#" aria-label="Previous">
+      <span aria-hidden="true">&lt;</span>
+    </a>
+  </li>`;
+  }
+  // &laquo; = <<
+  // &lt; = <
+
   for (let i = firstPage; i <= lastPage; i++) {
-    paginationHTML += `<li class="page-item ${
+    paginationHTML += `
+    <li class="page-item ${
       i === page ? "active" : ""
     }" onClick="moveToPage(${i})"><a class="page-link" href="#">${i}</a></li>`;
   }
+
+  if (lastPage < totalPages) {
+    paginationHTML += ` <li class="page-item" onClick="moveToPage(${page + 1})">
+    <a class="page-link" href="#" aria-label="Next">
+      <span aria-hidden="true">&gt;</span>
+    </a>
+   </li><li class="page-item" onClick="moveToPage(${totalPages})">
+   <a class="page-link" href="#" aria-label="Next">
+     <span aria-hidden="true">&raquo;</span>
+   </a>
+   </li>`;
+  }
+  // &raquo; = >>
+  // &gt; = >
 
   document.querySelector(".pagination").innerHTML = paginationHTML;
 };
