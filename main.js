@@ -134,7 +134,9 @@ const render = () => {
     .map(
       (news) =>
         `
-  <div class="row news"><div class="col-lg-4">
+  <div class="row news">
+  <a href="${news.url}">
+  <div class="col-lg-4">
       <img
         class="news-img-size mb-2"
         src="${news.urlToImage}"
@@ -153,7 +155,9 @@ const render = () => {
       <div>${news.source.name || "no source"} * ${moment(
           news.publishedAt
         ).fromNow()}</div>
-    </div></div>
+    </div>
+    </a>
+    </div>
   `
     )
     .join("");
